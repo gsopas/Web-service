@@ -1,23 +1,20 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
+from flask_cors import CORS
+import os
 
 app = Flask(__name__)
+CORS(app)  # Enables CORS for all routes — allows your frontend to reach it
 
-@app.route("/")
+@app.route('/')
 def home():
-    return "API is running ✅"
+    return jsonify({"message": "Flask server running successfully"})
 
-@app.route("/greet", methods=["GET"])
-def greet():
-    name = request.args.get("name", "friend")
-    return jsonify({"message": f"Hello, {name}!"})
+# Example API endpoint
+@app.route('/api/data', methods=['GET'])
+def get_data():
+    return jsonify({"data": "Hello from Flask!"})
 
-@app.route("/sum", methods=["POST"])
-def do_sum():
-    data = request.get_json() or {}
-    a = data.get("a", 0)
-    b = data.get("b", 0)
-    return jsonify({"result": a + b})
-
-if __name__ == "__main__":
-    # Replit συνήθως ακούει στο 0.0.0.0 και port 8000
-    app.run(host="0.0.0.0", port=8000)
+if __name__ == '__main__':
+    # important for Render / Replit / any host — use PORT env variable if present
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
